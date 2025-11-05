@@ -3,6 +3,13 @@
 // 🔗 Base URL for backend
 const API_URL = (import.meta.env.VITE_API_URL || "http://localhost:3000").replace(/\/+$/, "");
 
+// Helper to construct API URLs without double slashes
+const buildUrl = (endpoint: string) => {
+  const base = API_URL.replace(/\/+$/, "");
+  const path = endpoint.replace(/^\/+/, "");
+  return `${base}/${path}`;
+};
+
 // 📝 TypeScript Interfaces
 export interface NodeResult {
   nodeId: number;
@@ -78,7 +85,7 @@ export async function apiRequest<T>(
   token?: string | null
 ): Promise<T> {
   try {
-    const url = `${API_URL}${endpoint}`;
+    const url = buildUrl(endpoint);
     console.log('🌐 Making API request:', {
       url,
       endpoint,

@@ -16,11 +16,15 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: ["https://open-ai-chainkc.vercel.app", "http://localhost:5173"],
+  origin: [
+    "https://open-ai-chainkc.vercel.app",
+    "https://open-ai-chainkc-g3g5rigwj-lovely-sharmas-projects-ccab510e.vercel.app",
+    "http://localhost:5173"
+  ],
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
-  preflightContinue: true,
+  preflightContinue: false,
   optionsSuccessStatus: 204
 }));
 app.use(express.json());
