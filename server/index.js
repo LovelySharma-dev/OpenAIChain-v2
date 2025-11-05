@@ -14,10 +14,10 @@ dotenv.config();
 
 const app = express();
 
-// Middleware
-app.use(cors({
+// CORS configuration
+const corsOptions = {
   origin: [
-    "https://open-ai-chainkc.vercel.app",
+    process.env.CLIENT_ORIGIN || "https://open-ai-chainkc.vercel.app",
     "https://open-ai-chainkc-g3g5rigwj-lovely-sharmas-projects-ccab510e.vercel.app",
     "http://localhost:5173"
   ],
@@ -26,7 +26,13 @@ app.use(cors({
   allowedHeaders: ["Content-Type", "Authorization"],
   preflightContinue: false,
   optionsSuccessStatus: 204
-}));
+};
+
+app.use(cors(corsOptions));
+
+// Explicitly handle preflight for all routes using the same options
+app.options("*", cors(corsOptions));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
