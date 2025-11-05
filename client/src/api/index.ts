@@ -1,7 +1,7 @@
 // client/src/api/index.ts
 
 // 🔗 Base URL for backend
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+const API_URL = (import.meta.env.VITE_API_URL || "http://localhost:3000").replace(/\/+$/, "");
 
 // 📝 TypeScript Interfaces
 export interface NodeResult {
@@ -79,6 +79,13 @@ export async function apiRequest<T>(
 ): Promise<T> {
   try {
     const url = `${API_URL}${endpoint}`;
+    console.log('🌐 Making API request:', {
+      url,
+      endpoint,
+      method: options.method || 'GET',
+      API_URL
+    });
+    
     const headers: HeadersInit = { 
       "Content-Type": "application/json",
     };
@@ -88,6 +95,8 @@ export async function apiRequest<T>(
     if (effectiveToken) {
       headers["Authorization"] = `Bearer ${effectiveToken}`;
     }
+
+    console.log('📨 Request headers:', headers);
     
     const res = await fetch(url, {
       headers,
