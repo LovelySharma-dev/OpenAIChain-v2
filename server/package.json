@@ -1,0 +1,31 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "OpenAIChain Backend - AI Model Marketplace and Federated Learning Platform",
+  "dependencies": {
+    "@tensorflow/tfjs": "^4.22.0",
+    "axios": "^1.13.1",
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "ethers": "^6.15.0",
+    "express": "^5.1.0",
+    "google-auth-library": "^9.15.1",
+    "jose": "^5.9.6",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.19.2",
+    "web3": "^4.16.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}

@@ -1,0 +1,112 @@
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
+import connectDB from "./utils/connectDB.js";
+
+// Import routes
+import authRoutes from "./routes/authRoutes.js";
+import modelRoutes from "./routes/modelRoutes.js";
+import aiRoutes from "./routes/aiRoutes.js";
+import rewardRoutes from "./routes/rewardRoutes.js";
+import governanceRoutes from "./routes/governanceRoutes.js";
+
+dotenv.config();
+
+const app = express();
+
+// Middleware
+app.use(cors({
+  origin: process.env.CLIENT_ORIGIN || "http://localhost:5173",
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+}));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Simple request logger for debugging
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+  next();
+});
+
+// Connect to MongoDB
+connectDB();
+
+// Welcome route
+app.get("/", (req, res) => {
+  res.json({
+    message: "🚀 OpenAIChain Backend API",
+    version: "1.0.0",
+    endpoints: {
+      models: "/api/models",
+      train: "/api/train",
+      reward: "/api/reward",
+      governance: "/api/governance"
+    },
+    status: "running",
+    features: [
+      "AI Model Marketplace",
+      "Federated Learning",
+      "Token Rewards System",
+      "DAO Governance"
+    ]
+  });
+});
+
+// API Routes
+app.use("/api/auth", authRoutes);
+app.use("/api/models", modelRoutes);
+app.use("/api", aiRoutes);
+app.use("/api/reward", rewardRoutes);
+app.use("/api/wallet", rewardRoutes); // Wallet routes also in rewardRoutes
+app.use("/api/governance", governanceRoutes);
+
+// Health check
+app.get("/health", (req, res) => {
+  res.json({
+    status: "healthy",
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime()
+  });
+});
+
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    message: "Route not found",
+    availableRoutes: [
+      "GET /api/models",
+      "POST /api/train",
+      "POST /api/reward",
+      "GET /api/governance"
+    ]
+  });
+});
+
+// Error handler
+app.use((err, req, res, next) => {
+  console.error("❌ Error:", err.message);
+  res.status(500).json({
+    success: false,
+    message: "Internal server error",
+    error: process.env.NODE_ENV === 'development' ? err.message : undefined
+  });
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, "localhost", () => {
+  console.log("\n" + "=".repeat(50));
+  console.log("🚀 OpenAIChain Backend Server Started");
+  console.log("=".repeat(50));
+  console.log(`📡 Server running on http://localhost:${PORT}`);
+  console.log(`🌐 Health check: http://localhost:${PORT}/health`);
+  console.log("\n📋 Available API Endpoints:");
+  console.log("   GET  /api/models       - Fetch AI models from Hugging Face");
+  console.log("   POST /api/train        - Train model with TensorFlow.js");
+  console.log("   POST /api/reward       - Calculate token rewards");
+  console.log("   GET  /api/governance   - Get DAO proposals");
+  console.log("   POST /api/governance/vote - Vote on proposals");
+  console.log("=".repeat(50) + "\n");
+});
