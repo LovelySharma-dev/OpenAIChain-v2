@@ -1,5 +1,6 @@
 {
   "version": 2,
+  "outputDirectory": "client/dist",
   "routes": [
     { "src": "/api/(.*)", "dest": "server/index.js" },
     { "src": "/(.*)", "dest": "client/dist/$1" }
