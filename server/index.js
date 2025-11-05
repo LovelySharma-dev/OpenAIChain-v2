@@ -31,7 +31,8 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 // Explicitly handle preflight for all routes using the same options
-app.options("*", cors(corsOptions));
+// Use a path pattern compatible with express/path-to-regexp
+app.options("/*", cors(corsOptions));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
