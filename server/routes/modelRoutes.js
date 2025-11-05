@@ -4,10 +4,48 @@ import Model from "../models/Model.js";
 
 const router = express.Router();
 
+// Health check endpoint for HuggingFace API
+router.get("/health", async (req, res) => {
+  try {
+    console.log("🏥 Checking HuggingFace API health...");
+    console.log("HF_API_KEY present:", !!process.env.HF_API_KEY);
+    
+    const response = await axios.get(
+      "https://huggingface.co/api/models",
+      {
+        params: { limit: 1 },
+        headers: {
+          'Authorization': process.env.HF_API_KEY ? `Bearer ${process.env.HF_API_KEY}` : undefined
+        },
+        timeout: 5000
+      }
+    );
+    
+    res.json({
+      success: true,
+      message: "HuggingFace API is accessible",
+      apiKeyPresent: !!process.env.HF_API_KEY,
+      sampleModel: response.data[0]?.id
+    });
+  } catch (error) {
+    console.error("❌ HuggingFace API health check failed:", error.message);
+    res.status(500).json({
+      success: false,
+      message: "HuggingFace API health check failed",
+      error: error.message,
+      apiKeyPresent: !!process.env.HF_API_KEY
+    });
+  }
+});
+
 // GET /api/models - Fetch models from Hugging Face
 router.get("/", async (req, res) => {
   try {
     console.log("📡 Fetching models from Hugging Face...");
+    console.log("Debug - Environment:", {
+      HF_API_KEY_present: !!process.env.HF_API_KEY,
+      NODE_ENV: process.env.NODE_ENV
+    });
     
     // Fetch from Hugging Face API
     const hfResponse = await axios.get(
