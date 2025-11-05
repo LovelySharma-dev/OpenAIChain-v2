@@ -100,7 +100,7 @@ const PORT = process.env.PORT || 3000;
 // When deployed to Vercel as a serverless function, do NOT call `app.listen`.
 // Vercel will import this module and use the exported handler directly.
 if (!process.env.VERCEL) {
-  app.listen(PORT, "localhost", () => {
+  app.listen(PORT, "0.0.0.0", () => {
     console.log("\n" + "=".repeat(50));
     console.log("🚀 OpenAIChain Backend Server Started");
     console.log("=".repeat(50));
