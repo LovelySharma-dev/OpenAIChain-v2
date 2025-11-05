@@ -96,17 +96,27 @@ app.use((err, req, res, next) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, "localhost", () => {
-  console.log("\n" + "=".repeat(50));
-  console.log("🚀 OpenAIChain Backend Server Started");
-  console.log("=".repeat(50));
-  console.log(`📡 Server running on http://localhost:${PORT}`);
-  console.log(`🌐 Health check: http://localhost:${PORT}/health`);
-  console.log("\n📋 Available API Endpoints:");
-  console.log("   GET  /api/models       - Fetch AI models from Hugging Face");
-  console.log("   POST /api/train        - Train model with TensorFlow.js");
-  console.log("   POST /api/reward       - Calculate token rewards");
-  console.log("   GET  /api/governance   - Get DAO proposals");
-  console.log("   POST /api/governance/vote - Vote on proposals");
-  console.log("=".repeat(50) + "\n");
-});
+
+// When deployed to Vercel as a serverless function, do NOT call `app.listen`.
+// Vercel will import this module and use the exported handler directly.
+if (!process.env.VERCEL) {
+  app.listen(PORT, "localhost", () => {
+    console.log("\n" + "=".repeat(50));
+    console.log("🚀 OpenAIChain Backend Server Started");
+    console.log("=".repeat(50));
+    console.log(`📡 Server running on http://localhost:${PORT}`);
+    console.log(`🌐 Health check: http://localhost:${PORT}/health`);
+    console.log("\n📋 Available API Endpoints:");
+    console.log("   GET  /api/models       - Fetch AI models from Hugging Face");
+    console.log("   POST /api/train        - Train model with TensorFlow.js");
+    console.log("   POST /api/reward       - Calculate token rewards");
+    console.log("   GET  /api/governance   - Get DAO proposals");
+    console.log("   POST /api/governance/vote - Vote on proposals");
+    console.log("=".repeat(50) + "\n");
+  });
+}
+
+// Export the Express app so Vercel's Node builder can use it as a serverless handler.
+// The Express `app` is a valid request handler (function), so exporting it works
+// with Vercel's expectations for a default export.
+export default app;
